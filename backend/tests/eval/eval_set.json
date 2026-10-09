@@ -1,0 +1,62 @@
+{
+  "document": "lecture_notes_databases.pdf",
+  "note": "Hand-labeled retrieval eval set for Recall. expected_pages lists every page we'd accept as a correct retrieval hit for that question - top_k retrieval counts as a hit if ANY expected page appears among the retrieved chunks' source pages.",
+  "questions": [
+    {
+      "id": "acid_definition",
+      "question": "What does the A in ACID stand for, and what does it mean?",
+      "expected_pages": [1]
+    },
+    {
+      "id": "durability_definition",
+      "question": "What is durability in the context of database transactions?",
+      "expected_pages": [1]
+    },
+    {
+      "id": "default_isolation_postgres",
+      "question": "What is the default transaction isolation level in PostgreSQL?",
+      "expected_pages": [2]
+    },
+    {
+      "id": "dirty_reads",
+      "question": "Which isolation level allows dirty reads?",
+      "expected_pages": [2]
+    },
+    {
+      "id": "btree_vs_hash",
+      "question": "Why can't a hash index be used for a range query like age BETWEEN 20 AND 30?",
+      "expected_pages": [3]
+    },
+    {
+      "id": "default_index_type",
+      "question": "What is the default index type in PostgreSQL and MySQL?",
+      "expected_pages": [3]
+    },
+    {
+      "id": "third_normal_form",
+      "question": "What does Third Normal Form (3NF) require that Second Normal Form (2NF) does not?",
+      "expected_pages": [4]
+    },
+    {
+      "id": "1nf_example",
+      "question": "What does it mean for a table to be in First Normal Form?",
+      "expected_pages": [4]
+    },
+    {
+      "id": "cap_tradeoff",
+      "question": "According to the CAP theorem, what's the practical trade-off when a network partition happens?",
+      "expected_pages": [5]
+    },
+    {
+      "id": "single_node_cap",
+      "question": "Does the CAP theorem's trade-off apply to a single-node relational database? Why or why not?",
+      "expected_pages": [5]
+    },
+    {
+      "id": "not_in_document",
+      "question": "What sharding strategy does the lecture recommend for a 10-node cluster?",
+      "expected_pages": [],
+      "expect_not_answerable": true
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+# Local development only: adds sentence-transformers (and its torch
+# dependency) on top of the lean production requirements, for testing with
+# EMBEDDING_BACKEND=local. Do not use this file for the Render deploy - see
+# requirements.txt for why.
+-r requirements.txt
+sentence-transformers==3.3.1

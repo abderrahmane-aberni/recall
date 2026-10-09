@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: recall-backend
+    runtime: python
+    plan: free
+    rootDir: .
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir backend
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash-lite
+      - key: DATABASE_URL
+        sync: false
+      # Render's free tier has 512MB RAM - sentence-transformers + torch (the
+      # "local" embedding backend) doesn't fit. Production runs on Gemini's
+      # embedding API instead; "local" stays the default for local dev, where
+      # RAM isn't a constraint and avoiding API calls while iterating is nice.
+      - key: EMBEDDING_BACKEND
+        value: gemini
+      - key: GEMINI_EMBEDDING_MODEL
+        value: gemini-embedding-001
+      - key: EMBEDDING_DIM
+        value: "768"
+      - key: CHUNK_SIZE_CHARS
+        value: "1200"
+      - key: CHUNK_OVERLAP_CHARS
+        value: "200"
+      - key: RETRIEVAL_TOP_K
+        value: "5"
+      - key: RATE_LIMIT_PER_IP_PER_HOUR
+        value: "20"
+      - key: RATE_LIMIT_GLOBAL_PER_DAY
+        value: "200"
+  - type: web
+    name: recall-frontend
+    runtime: docker
+    plan: free
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: BACKEND_URL
+        sync: false

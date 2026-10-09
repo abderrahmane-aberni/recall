@@ -1,0 +1,15 @@
+# Lean production/deploy requirements - no sentence-transformers/torch here on
+# purpose (that's several hundred MB and runs the free Render tier's 512MB RAM
+# out of memory). This set assumes EMBEDDING_BACKEND=gemini in production.
+# For local development with EMBEDDING_BACKEND=local, use requirements-local.txt
+# instead, which includes this file plus sentence-transformers.
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+python-dotenv==1.0.1
+pydantic==2.10.4
+sqlalchemy==2.0.36
+psycopg2-binary==2.9.10
+pgvector==0.3.6
+pypdf==5.1.0
+google-genai==1.3.0
