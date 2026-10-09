@@ -7,6 +7,14 @@ services:
     buildCommand: pip install -r backend/requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir backend
     envVars:
+      # Pin the build image's Python version. Render's default has moved to
+      # 3.14, which doesn't yet have prebuilt wheels for pydantic-core==2.27.2
+      # (pulled in by pydantic==2.10.4) - pip falls back to compiling it from
+      # source via Rust/maturin, which fails in Render's build sandbox because
+      # its cargo cache directory is read-only. 3.11 has wheels for every
+      # pinned dependency here and matches what was tested locally.
+      - key: PYTHON_VERSION
+        value: 3.11.9
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL
