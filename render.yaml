@@ -37,6 +37,11 @@ services:
         value: "200"
       - key: RETRIEVAL_TOP_K
         value: "5"
+      # Matches the Streamlit upload widget's own displayed limit ("Limit
+      # 200MB per file") so the two don't silently disagree - a file the
+      # widget accepts no longer gets rejected by the backend after upload.
+      - key: MAX_UPLOAD_MB
+        value: "200"
       - key: RATE_LIMIT_PER_IP_PER_HOUR
         value: "20"
       - key: RATE_LIMIT_GLOBAL_PER_DAY

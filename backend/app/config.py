@@ -46,7 +46,7 @@ class Settings:
         self.retrieval_top_k = int(os.getenv("RETRIEVAL_TOP_K", "5"))
 
         # --- Uploads ---
-        self.max_upload_mb = int(os.getenv("MAX_UPLOAD_MB", "20"))
+        self.max_upload_mb = int(os.getenv("MAX_UPLOAD_MB", "200"))
 
         # --- Rate limiting (protects the free-tier Gemini quota on a public demo) ---
         self.rate_limit_per_ip_per_hour = int(os.getenv("RATE_LIMIT_PER_IP_PER_HOUR", "20"))
