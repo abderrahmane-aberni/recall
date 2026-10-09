@@ -94,22 +94,27 @@ guessing one page.
 **Defaults: 1200 characters per chunk, 200 character overlap.** The
 chunk-size experiment in `backend/tests/eval/run_chunk_experiment.py`
 compares retrieval hit-rate@k across several (chunk_size, overlap) pairs on
-the hand-labeled eval set - see the results below for why 1200/200 was kept
-over the alternatives.
+the hand-labeled eval set.
 
 ### Chunk-size experiment results
 
-_Run `python tests/eval/run_chunk_experiment.py` from `backend/` (with a real
-`GEMINI_API_KEY` and `DATABASE_URL` in `backend/.env`) and paste the printed
-table here. This needs a live Gemini key and Postgres connection, so it has
-to be run by a human - see "Known limitations" below for why._
-
 | chunk_size_chars | overlap_chars | chunks produced | hit-rate@5 |
 |---|---|---|---|
-| 400 | 50 | — | — |
-| 800 | 150 | — | — |
-| 1200 (default) | 200 | — | — |
-| 2000 | 300 | — | — |
+| 400 | 50 | 12 | 100% |
+| 800 | 150 | 6 | 100% |
+| 1200 (default) | 200 | 4 | 100% |
+| 2000 | 300 | 3 | 100% |
+
+**Honest reading of this result:** every configuration scored 100%, which
+doesn't actually distinguish between them - and the reason is informative in
+its own right. The demo document is only 5 pages, so even the largest chunk
+size produces just 3 chunks, and `RETRIEVAL_TOP_K=5` retrieves effectively
+the whole document regardless of how it's split. This experiment would only
+discriminate between chunk sizes on a document long enough that top-k
+retrieval misses chunks at some sizes but not others (tens of pages, not
+five). 1200/200 is kept as the default anyway because it's a reasonable
+middle ground for typical lecture-note-length documents - not because this
+particular run proved it beats the alternatives.
 
 ## Embeddings: two interchangeable backends
 
@@ -149,14 +154,48 @@ through the full chat pipeline to check the final answer and citations.
 
 ### Results
 
-_Run `python tests/eval/run_eval.py` from `backend/` and paste the printed
-table and summary line here (also written to
-`backend/tests/eval/results.json`, which gets committed alongside this
-README once it exists)._
+Run with `EMBEDDING_BACKEND=gemini`, `CHUNK_SIZE_CHARS=1200`,
+`CHUNK_OVERLAP_CHARS=200`, `RETRIEVAL_TOP_K=5` (full output in
+`backend/tests/eval/results.json`):
 
-```
-(pending a live run - see "Known limitations")
-```
+| ID | Hit | Expected page | Retrieved pages | Citations |
+|---|---|---|---|---|
+| acid_definition | yes | [1] | [1,2,3,4,5] | 1 |
+| durability_definition | yes | [1] | [1,2,3,4,5] | 1 |
+| default_isolation_postgres | yes | [2] | [1,2,3,4,5] | 2 |
+| dirty_reads | yes | [2] | [1,2,3,4,5] | 1 |
+| btree_vs_hash | yes | [3] | [1,2,3,4,5] | 2 |
+| default_index_type | yes | [3] | [1,2,3,4,5] | 1 |
+| third_normal_form | yes | [4] | [1,2,3,4,5] | 1 |
+| 1nf_example | yes | [4] | [1,2,3,4,5] | 1 |
+| cap_tradeoff | yes | [5] | [1,2,3,4,5] | 1 |
+| single_node_cap | yes | [5] | [1,2,3,4,5] | 1 |
+| not_in_document | n/a | — | [1,2,3,4,5] | 0 |
+
+**Hit-rate@5: 100% (threshold 80%) → PASS.**
+
+Every answer cited the correct page(s) for its question - see the sample
+answers below. The one question with no answer in the document
+(`not_in_document`, asking about a sharding strategy the lecture never
+covers) correctly came back with zero citations and this answer: *"The
+provided context passages do not contain information about sharding
+strategies for a 10-node cluster."* - rather than a confident guess, which is
+exactly what the `answerable_from_context` schema field (see "Citation
+safety" above) is there to prevent.
+
+Two representative answers, citations included:
+
+> **Q: What is the default transaction isolation level in PostgreSQL?**
+> The default isolation level in PostgreSQL is Read Committed [1][2].
+
+> **Q: Why can't a hash index be used for a range query like age BETWEEN 20 AND 30?**
+> A hash index cannot be used for a range query because hashing destroys the
+> original ordering of the values [1][2].
+
+As with the chunk-size experiment, a perfect hit-rate on a 5-page document
+with top-k=5 is partly a function of how little there is to miss - this
+confirms the retrieval and citation-mapping code paths work correctly
+end-to-end, not that retrieval is bulletproof on a large corpus.
 
 ## Project structure
 
@@ -222,10 +261,17 @@ pytest tests/ -v
   If an answer genuinely needs synthesizing facts from more than
   `RETRIEVAL_TOP_K` (default 5) chunks spread across a document, some of them
   won't make it into context.
-- **This assistant (Claude) could not run the live eval or chunk-size
-  experiment itself.** Both the Gemini API and the Neon Postgres host are
-  blocked by network egress policy from the sandboxed tools used to build
-  this project; every piece of pure logic (chunking, config fallbacks, the
-  citation-mapping function, the rate limiter) has a unit test that *was*
-  run and passes (`pytest tests/ -v` → 29 passed), but anything requiring a
-  live LLM or database call needs to be run by a human with real credentials.
+- **The small demo document limits what the eval can prove.** Both the
+  retrieval eval and the chunk-size experiment hit 100% on a 5-page document
+  with `RETRIEVAL_TOP_K=5`, which mostly reflects that there's little for
+  top-k retrieval to miss at that size - see the honest caveats in the
+  "Chunking" and "Retrieval evaluation" sections above. A longer, messier
+  real-world document set would be a better test of where this actually
+  breaks.
+- **Both the Gemini API and the Neon Postgres host were unreachable from
+  Claude's own sandboxed tools while building this project** (blocked by
+  network egress policy), so the live eval and chunk-size experiment had to
+  be run by a human with real credentials rather than by the assistant. Every
+  piece of pure logic (chunking, config fallbacks, the citation-mapping
+  function, the rate limiter) has a unit test that *was* run by the
+  assistant and passes (`pytest tests/ -v` → 29 passed).

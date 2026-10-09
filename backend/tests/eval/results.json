@@ -1,0 +1,207 @@
+{
+  "embedding_backend": "gemini",
+  "chunk_size_chars": 1200,
+  "chunk_overlap_chars": 200,
+  "retrieval_top_k": 5,
+  "hit_rate_at_k": 1.0,
+  "pass_threshold": 0.8,
+  "overall": "PASS",
+  "results": [
+    {
+      "id": "acid_definition",
+      "question": "What does the A in ACID stand for, and what does it mean?",
+      "expected_pages": [
+        1
+      ],
+      "retrieved_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "retrieval_hit": true,
+      "answer": "The A in ACID stands for Atomicity, which means that a transaction either completes entirely or has no effect at all; there is no partial completion [1].",
+      "num_citations": 1,
+      "expect_not_answerable": false
+    },
+    {
+      "id": "durability_definition",
+      "question": "What is durability in the context of database transactions?",
+      "expected_pages": [
+        1
+      ],
+      "retrieved_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "retrieval_hit": true,
+      "answer": "Durability means that once a transaction is committed, it remains committed even in the event of a power loss or crash [1].",
+      "num_citations": 1,
+      "expect_not_answerable": false
+    },
+    {
+      "id": "default_isolation_postgres",
+      "question": "What is the default transaction isolation level in PostgreSQL?",
+      "expected_pages": [
+        2
+      ],
+      "retrieved_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "retrieval_hit": true,
+      "answer": "The default isolation level in PostgreSQL is Read Committed [1][2].",
+      "num_citations": 2,
+      "expect_not_answerable": false
+    },
+    {
+      "id": "dirty_reads",
+      "question": "Which isolation level allows dirty reads?",
+      "expected_pages": [
+        2
+      ],
+      "retrieved_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "retrieval_hit": true,
+      "answer": "The Read Uncommitted isolation level allows transactions to see uncommitted changes made by other transactions, which are known as dirty reads [2].",
+      "num_citations": 1,
+      "expect_not_answerable": false
+    },
+    {
+      "id": "btree_vs_hash",
+      "question": "Why can't a hash index be used for a range query like age BETWEEN 20 AND 30?",
+      "expected_pages": [
+        3
+      ],
+      "retrieved_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "retrieval_hit": true,
+      "answer": "A hash index cannot be used for a range query because hashing destroys the original ordering of the values [1][2].",
+      "num_citations": 2,
+      "expect_not_answerable": false
+    },
+    {
+      "id": "default_index_type",
+      "question": "What is the default index type in PostgreSQL and MySQL?",
+      "expected_pages": [
+        3
+      ],
+      "retrieved_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "retrieval_hit": true,
+      "answer": "The default index type in PostgreSQL and MySQL is the B-tree index [1].",
+      "num_citations": 1,
+      "expect_not_answerable": false
+    },
+    {
+      "id": "third_normal_form",
+      "question": "What does Third Normal Form (3NF) require that Second Normal Form (2NF) does not?",
+      "expected_pages": [
+        4
+      ],
+      "retrieved_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "retrieval_hit": true,
+      "answer": "Third Normal Form (3NF) requires that the table is in 2NF and that every non-key column depends only on the primary key, not on another non-key column (meaning there are no transitive dependencies) [2].",
+      "num_citations": 1,
+      "expect_not_answerable": false
+    },
+    {
+      "id": "1nf_example",
+      "question": "What does it mean for a table to be in First Normal Form?",
+      "expected_pages": [
+        4
+      ],
+      "retrieved_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "retrieval_hit": true,
+      "answer": "For a table to be in First Normal Form (1NF), every column must hold a single, atomic value with no repeating groups or arrays inside a single column.",
+      "num_citations": 1,
+      "expect_not_answerable": false
+    },
+    {
+      "id": "cap_tradeoff",
+      "question": "According to the CAP theorem, what's the practical trade-off when a network partition happens?",
+      "expected_pages": [
+        5
+      ],
+      "retrieved_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "retrieval_hit": true,
+      "answer": "Because real networks experience partitions, the practical choice according to the CAP theorem is between CP (consistent, meaning it may reject requests during a partition) and AP (available, meaning it may serve stale data during a partition) [1].",
+      "num_citations": 1,
+      "expect_not_answerable": false
+    },
+    {
+      "id": "single_node_cap",
+      "question": "Does the CAP theorem's trade-off apply to a single-node relational database? Why or why not?",
+      "expected_pages": [
+        5
+      ],
+      "retrieved_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "retrieval_hit": true,
+      "answer": "No, a single-node relational database sidesteps the CAP theorem's trade-off entirely, since there is no partition to tolerate [1].",
+      "num_citations": 1,
+      "expect_not_answerable": false
+    },
+    {
+      "id": "not_in_document",
+      "question": "What sharding strategy does the lecture recommend for a 10-node cluster?",
+      "expected_pages": [],
+      "retrieved_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "retrieval_hit": null,
+      "answer": "The provided context passages do not contain information about sharding strategies for a 10-node cluster.",
+      "num_citations": 0,
+      "expect_not_answerable": true
+    }
+  ]
+}
