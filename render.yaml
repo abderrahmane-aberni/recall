@@ -46,7 +46,12 @@ services:
     runtime: docker
     plan: free
     dockerfilePath: ./frontend/Dockerfile
-    dockerContext: .
+    # Build context must be the frontend/ directory itself, not the repo root -
+    # the Dockerfile's COPY commands use bare filenames (COPY streamlit_app.py .)
+    # which only resolve inside frontend/. (A repo-root context was copy-pasted
+    # from a different project's setup and never actually matched this
+    # Dockerfile - first deploy failed with "streamlit_app.py: not found".)
+    dockerContext: ./frontend
     envVars:
       - key: BACKEND_URL
         sync: false
