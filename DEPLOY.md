@@ -85,6 +85,24 @@ After saving each env var, Render redeploys that service automatically.
   `lecture_notes_databases.pdf` (included at the repo root), and ask it a
   question from `backend/tests/eval/eval_set.json`.
 
+## Troubleshooting notes from the first deploy
+
+Both of these are already fixed in this repo's `render.yaml` - documented
+here in case a future change to the Blueprint reintroduces either.
+
+- **Backend build failed with a Rust/maturin error compiling
+  `pydantic-core`.** Render's default build image had moved to Python 3.14,
+  which didn't yet have a prebuilt wheel for `pydantic-core==2.27.2` (pulled
+  in by `pydantic==2.10.4`), so pip fell back to compiling it from source -
+  which failed because the build sandbox's cargo cache directory is
+  read-only. Fixed by pinning `PYTHON_VERSION=3.11.9` as an env var on
+  `recall-backend`.
+- **Frontend Docker build failed with `"streamlit_app.py": not found`.**
+  `dockerContext` was set to the repo root, but `frontend/Dockerfile`'s
+  `COPY` commands use bare filenames (`COPY streamlit_app.py .`), which only
+  resolve correctly if the build context is `frontend/` itself. Fixed by
+  setting `dockerContext: ./frontend`.
+
 ## Notes on the free tier
 
 - Both services spin down after ~15 minutes of inactivity and take 30-60

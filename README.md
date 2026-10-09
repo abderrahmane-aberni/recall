@@ -6,7 +6,11 @@ them in a chat interface. Every answer is grounded in the actual uploaded
 material and cites exactly which document and page it came from - if the
 material doesn't contain the answer, Recall says so instead of guessing.
 
-Live demo: _add the Render URL here once deployed (see DEPLOY.md)._
+Live demo: [recall-frontend-3yor.onrender.com](https://recall-frontend-3yor.onrender.com)
+(backend: [recall-backend-mmgs.onrender.com](https://recall-backend-mmgs.onrender.com/api/health))
+
+Both are free-tier Render services, so the first request after a quiet
+period takes 30-60 seconds to wake up - that's expected, not broken.
 
 ## Why this exists
 
