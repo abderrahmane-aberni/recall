@@ -16,11 +16,12 @@ st.set_page_config(page_title="Recall", page_icon="📚", layout="wide")
 
 
 def _get_backend_url() -> str:
-    try:
-        if "BACKEND_URL" in st.secrets:
-            return st.secrets["BACKEND_URL"].rstrip("/")
-    except Exception:
-        pass
+    # Deployed on Render via env vars, not Streamlit Community Cloud, so
+    # there's deliberately no st.secrets lookup here - touching st.secrets
+    # with no secrets.toml present makes Streamlit show a "No secrets found"
+    # banner on every page load, which is confusing for visitors even though
+    # it's harmless. BACKEND_URL is always an env var in every environment
+    # this app actually runs in (local dev, Render).
     return os.getenv("BACKEND_URL", "http://localhost:8000").rstrip("/")
 
 
